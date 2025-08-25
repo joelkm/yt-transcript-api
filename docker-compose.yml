@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  yt-transcription-api:
+    build: .
+    container_name: yt-transcription-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - WHISPER_MODEL=${WHISPER_MODEL:-base}
+    volumes:
+      # Mount for development (optional - comment out for production)
+      - ./main.py:/app/main.py
+      - ./test_api.py:/app/test_api.py
+      # Temporary directory for audio files
+      - ./temp:/tmp/yt-transcribe
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - yt-transcription-network
+
+  # Optional: Add Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: yt-transcription-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+  #   networks:
+  #     - yt-transcription-network
+
+networks:
+  yt-transcription-network:
+    driver: bridge
+
+volumes:
+  # Create temp directory for audio files
+  temp:
+  # Uncomment if using Redis
+  # redis_data:
