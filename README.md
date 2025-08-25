@@ -490,6 +490,10 @@ docker stats
 docker system prune
 ```
 
+## Disclaimer
+
+⚠️ **AI-Generated Code**: This project was created with AI assistance (Claude). While functional and tested, please review the code thoroughly before using in production environments. The AI-generated code should be treated as a starting point and may require modifications for specific use cases.
+
 ## License
 
 This project is open source. Please check the licenses of dependencies:
